@@ -1,0 +1,23 @@
+\begin{table}[t]
+    \centering
+    \caption{Rank $\times$ learning-rate sweep on \qsmall (seed 0). Metric in \%. The best value in each (task, rank) column is in {\bf bold}. ``Best over lr'' takes the per-rank maximum. With a tuned learning rate, the spread across ranks is 0.7\pp on \emotion, 1.8\pp on \code, and 3.6\pp on \gsm (favouring $r{=}8$ over $r{=}128$).}
+    \label{tab:lr}
+    \small
+    \begin{tabular}{@{}lcccc@{\hskip 14pt}cccc@{\hskip 14pt}cccc@{}}
+        \toprule
+        & \multicolumn{4}{c}{\textbf{\emotion}} & \multicolumn{4}{c}{\textbf{\gsm}} & \multicolumn{4}{c}{\textbf{\code}} \\
+        \cmidrule(lr){2-5} \cmidrule(lr){6-9} \cmidrule(lr){10-13}
+        \textbf{lr} & $r2$ & $r8$ & $r32$ & $r128$ & $r2$ & $r8$ & $r32$ & $r128$ & $r2$ & $r8$ & $r32$ & $r128$ \\
+        \midrule
+        $2\times10^{-5}$ & -- & -- & -- & -- & -- & 36.2 & -- & {\bf 34.0} & -- & 28.4 & -- & {\bf 27.8} \\
+        $5\times10^{-5}$ & 68.9 & 77.5 & 87.0 & 92.1 & 35.8 & {\bf 37.6} & {\bf 35.0} & 30.2 & 28.6 & 28.4 & {\bf 29.6} & {\bf 27.8} \\
+        $1\times10^{-4}$ & 74.7 & 84.8 & 91.0 & {\bf 92.4} & {\bf 36.0} & 35.6 & 33.0 & 33.0 & {\bf 29.0} & {\bf 28.8} & 28.6 & 25.2 \\
+        $2\times10^{-4}$ & 82.2 & 89.6 & {\bf 92.4} & {\bf 92.4} & 35.2 & 34.0 & 32.2 & 30.0 & 28.4 & 27.8 & 27.6 & 22.2 \\
+        $5\times10^{-4}$ & 90.3 & {\bf 92.8} & {\bf 92.4} & 90.5 & 35.0 & 32.2 & 31.2 & 22.4 & {\bf 29.0} & 26.6 & 22.8 & 15.4 \\
+        $1\times10^{-3}$ & {\bf 92.1} & {\bf 92.8} & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+        $2\times10^{-3}$ & 91.7 & 91.0 & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\
+        \midrule
+        Best over lr & 92.1 & 92.8 & 92.4 & 92.4 & 36.0 & 37.6 & 35.0 & 34.0 & 29.0 & 28.8 & 29.6 & 27.8 \\
+        \bottomrule
+    \end{tabular}
+\end{table}

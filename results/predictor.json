@@ -1,0 +1,227 @@
+{
+ "knee~r50": {
+  "rho": NaN,
+  "p_perm": 0.0,
+  "n": 12,
+  "within2_loo": 0.3333333333333333
+ },
+ "knee~r90": {
+  "rho": -0.7420636578785956,
+  "p_perm": 0.0142,
+  "n": 12,
+  "within2_loo": 0.0
+ },
+ "knee~r99": {
+  "rho": -0.5759441223080841,
+  "p_perm": 0.0588,
+  "n": 12,
+  "within2_loo": 0.0
+ },
+ "knee~erank": {
+  "rho": -0.5221148022432555,
+  "p_perm": 0.0926,
+  "n": 12,
+  "within2_loo": 0.08333333333333333
+ },
+ "knee~stable_rank": {
+  "rho": -0.5665501045618304,
+  "p_perm": 0.0612,
+  "n": 12,
+  "within2_loo": 0.0
+ },
+ "knee~top8_energy": {
+  "rho": -0.6332030580396928,
+  "p_perm": 0.0288,
+  "n": 12,
+  "within2_loo": null
+ },
+ "knee~r90_fw": {
+  "rho": -0.6443118836193364,
+  "p_perm": 0.0296,
+  "n": 12,
+  "within2_loo": 0.0
+ },
+ "knee~erank_fw": {
+  "rho": -0.6443118836193364,
+  "p_perm": 0.0316,
+  "n": 12,
+  "within2_loo": 0.0
+ },
+ "knee~zero_shot": {
+  "rho": -0.49520924682644496,
+  "p_perm": 0.1108,
+  "n": 12,
+  "within2_loo": null
+ },
+ "best_rank~r50": {
+  "rho": NaN,
+  "p_perm": 0.0,
+  "n": 12,
+  "within2_loo": 0.5
+ },
+ "best_rank~r90": {
+  "rho": -0.6415178992833839,
+  "p_perm": 0.0294,
+  "n": 12,
+  "within2_loo": 0.4166666666666667
+ },
+ "best_rank~r99": {
+  "rho": -0.5576554985113145,
+  "p_perm": 0.0654,
+  "n": 12,
+  "within2_loo": 0.16666666666666666
+ },
+ "best_rank~erank": {
+  "rho": -0.45175511289177295,
+  "p_perm": 0.1428,
+  "n": 12,
+  "within2_loo": 0.08333333333333333
+ },
+ "best_rank~stable_rank": {
+  "rho": -0.6166815826776583,
+  "p_perm": 0.0396,
+  "n": 12,
+  "within2_loo": 0.5
+ },
+ "best_rank~top8_energy": {
+  "rho": -0.494779409357656,
+  "p_perm": 0.1118,
+  "n": 12,
+  "within2_loo": null
+ },
+ "best_rank~r90_fw": {
+  "rho": -0.7170716077647189,
+  "p_perm": 0.0114,
+  "n": 12,
+  "within2_loo": 0.4166666666666667
+ },
+ "best_rank~erank_fw": {
+  "rho": -0.530632989745892,
+  "p_perm": 0.0798,
+  "n": 12,
+  "within2_loo": 0.25
+ },
+ "best_rank~zero_shot": {
+  "rho": -0.6069876049215336,
+  "p_perm": 0.0434,
+  "n": 12,
+  "within2_loo": null
+ },
+ "knee_nll95~r50": {
+  "rho": NaN,
+  "p_perm": 0.0,
+  "n": 12,
+  "within2_loo": 1.0
+ },
+ "knee_nll95~r90": {
+  "rho": 0.27043359325018956,
+  "p_perm": 0.6324,
+  "n": 12,
+  "within2_loo": 0.9166666666666666
+ },
+ "knee_nll95~r99": {
+  "rho": 0.47016234598162726,
+  "p_perm": 0.161,
+  "n": 12,
+  "within2_loo": 0.6666666666666666
+ },
+ "knee_nll95~erank": {
+  "rho": 0.3886501653787775,
+  "p_perm": 0.2754,
+  "n": 12,
+  "within2_loo": 0.3333333333333333
+ },
+ "knee_nll95~stable_rank": {
+  "rho": 0.12955005512625914,
+  "p_perm": 0.763,
+  "n": 12,
+  "within2_loo": 1.0
+ },
+ "knee_nll95~top8_energy": {
+  "rho": 0.45342519294190703,
+  "p_perm": 0.1854,
+  "n": 12,
+  "within2_loo": null
+ },
+ "knee_nll95~r90_fw": {
+  "rho": 0.45342519294190703,
+  "p_perm": 0.1812,
+  "n": 12,
+  "within2_loo": 0.9166666666666666
+ },
+ "knee_nll95~erank_fw": {
+  "rho": 0.3886501653787775,
+  "p_perm": 0.2756,
+  "n": 12,
+  "within2_loo": 0.3333333333333333
+ },
+ "knee_nll95~zero_shot": {
+  "rho": 0.12977713690461,
+  "p_perm": 0.7432,
+  "n": 12,
+  "within2_loo": null
+ },
+ "knee_nll99~r50": {
+  "rho": NaN,
+  "p_perm": 0.0,
+  "n": 12,
+  "within2_loo": 0.25
+ },
+ "knee_nll99~r90": {
+  "rho": 0.21248353755372035,
+  "p_perm": 0.523,
+  "n": 12,
+  "within2_loo": 0.3333333333333333
+ },
+ "knee_nll99~r99": {
+  "rho": 0.3395616943200641,
+  "p_perm": 0.2768,
+  "n": 12,
+  "within2_loo": 0.4166666666666667
+ },
+ "knee_nll99~erank": {
+  "rho": 0.24470565968293395,
+  "p_perm": 0.4334,
+  "n": 12,
+  "within2_loo": 0.3333333333333333
+ },
+ "knee_nll99~stable_rank": {
+  "rho": 0.41024184123315394,
+  "p_perm": 0.1868,
+  "n": 12,
+  "within2_loo": 0.16666666666666666
+ },
+ "knee_nll99~top8_energy": {
+  "rho": 0.13314866776865522,
+  "p_perm": 0.6768,
+  "n": 12,
+  "within2_loo": null
+ },
+ "knee_nll99~r90_fw": {
+  "rho": 0.12595144248386306,
+  "p_perm": 0.6898,
+  "n": 12,
+  "within2_loo": 0.3333333333333333
+ },
+ "knee_nll99~erank_fw": {
+  "rho": 0.1151556045566748,
+  "p_perm": 0.7248,
+  "n": 12,
+  "within2_loo": 0.3333333333333333
+ },
+ "knee_nll99~zero_shot": {
+  "rho": 0.5623675932533101,
+  "p_perm": 0.059,
+  "n": 12,
+  "within2_loo": null
+ },
+ "knee~const8": {
+  "within2": 0.5
+ },
+ "best_rank~const8": {
+  "within2": 0.16666666666666666
+ },
+ "knee_nll95~const8": {
+  "within2": 0.0
+ }
+}

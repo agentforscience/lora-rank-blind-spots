@@ -1,0 +1,8 @@
+\section{Conclusion}
+\label{sec:conclusion}
+
+We asked whether the default \lora rank of 8 is a blind spot for tasks such as math and code. In a controlled sweep of about 200 adapters on \qsmall and \qlarge, the best rank was not a stable property of the task. At a fixed learning rate it ranged from 1 to 128, but the ordering contradicted the intuition: \gsm and code preferred low rank, and only 6-way \emotion classification gained significantly from more rank ($+2.6$\pp). Once we tuned the learning rate per rank, that gain disappeared, and $r{=}8$ was the best rank or within 0.8\pp of it on all three tasks in our learning-rate sweep. The spectrum of the initial gradient ordered tasks consistently but anti-predicted the needed rank ($\rho=-0.74$, $p=0.014$).
+
+{\bf The key takeaway is that, in small-data SFT, the default rank is not the blind spot; the default learning rate at a non-default rank is.} We recommend keeping $r\approx 8$--16, lowering the learning rate as rank grows (roughly $\propto 1/\sqrt{r}$ to $1/r$ under $\alpha=2r$), and avoiding $r\geq 64$ with standard scaling on small SFT sets.
+
+Future work should (1) repeat the study at 7B+ scale and with $\geq$100k-example or continued pre-training data, where high-rank benefits have been reported; (2) run the full rank $\times$ learning-rate grid with rsLoRA scaling; (3) test predictors based on a short pilot run, such as the spectrum of $\Delta\mW$ after 20 steps; and (4) use more seeds and larger evaluation sets for the generative tasks.

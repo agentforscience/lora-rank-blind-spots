@@ -1,0 +1,20 @@
+\begin{table}[t]
+    \centering
+    \caption{Effect of model size at learning rate $2\times10^{-4}$. The knee is lower for 1.5B on 3 tasks, equal on 3, and never higher (sign test $p=0.25$). The clearest size effect is robustness to large ranks: on \boolq, $r{=}128$ costs 10.9\pp at 0.5B but 2.5\pp at 1.5B.}
+    \label{tab:size}
+    \small
+    \begin{tabular}{@{}lcccccc@{}}
+        \toprule
+        & \multicolumn{2}{c}{\textbf{Knee}} & \multicolumn{2}{c}{\textbf{Best rank}} & \multicolumn{2}{c}{\textbf{$r128 -$ best (pp)}} \\
+        \cmidrule(lr){2-3} \cmidrule(lr){4-5} \cmidrule(lr){6-7}
+        \textbf{Task} & 0.5B & 1.5B & 0.5B & 1.5B & 0.5B & 1.5B \\
+        \midrule
+        \sst     & 8  & {\bf 1}  & 32  & 16  & $-$1.8  & $-$1.1 \\
+        \emotion & 32 & {\bf 16} & 128 & 32  & 0.0     & $-$0.9 \\
+        \agnews  & 8  & 8        & 64  & 128 & $-$0.7  & 0.0 \\
+        \boolq   & 16 & {\bf 8}  & 32  & 64  & $-$10.9 & $-$2.5 \\
+        \gsm     & 1  & 1        & 1   & 32  & $-$7.2  & $-$5.6 \\
+        \code    & 1  & 1        & 16  & 1   & $-$6.1  & $-$5.6 \\
+        \bottomrule
+    \end{tabular}
+\end{table}

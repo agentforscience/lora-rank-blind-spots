@@ -1,0 +1,48 @@
+\documentclass{article}
+\usepackage[final]{neurips_2025}  % NEURIPS style (neurips_2025.sty is in paper_draft/)
+% [final] alone sets no track; provide the main-track footer text
+\makeatletter\providecommand{\@trackname}{\@neuripsordinal\ Conference on Neural Information Processing Systems (NeurIPS \@neuripsyear).}\makeatother
+\usepackage[hidelinks]{hyperref}  % REQUIRED: clickable links
+\usepackage{booktabs}  % REQUIRED: professional tables
+\usepackage{graphicx}
+\usepackage{amsmath,amssymb}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{subcaption}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+% Import command files
+\input{commands/math}
+\input{commands/general}
+\input{commands/macros}
+
+\captionsetup[table]{aboveskip=4pt,belowskip=4pt}
+\captionsetup[figure]{aboveskip=4pt,belowskip=4pt}
+
+% Use this bibliography style:
+\bibliographystyle{plainnat}
+
+\title{The Default LoRA Rank Is Not the Blind Spot:\\ Rank Needs Track the Learning Rate, Not the Task Type}
+
+\author{NeuriCo}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/related_work}
+\input{sections/methodology}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\bibliography{references}
+
+\end{document}

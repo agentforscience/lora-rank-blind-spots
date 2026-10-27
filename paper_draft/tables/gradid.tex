@@ -1,0 +1,20 @@
+\begin{table}[t]
+    \centering
+    \caption{Gradient spectrum statistics at initialization (median over target matrices). \rninety, $r_{99}$: directions needed for 90\% / 99\% of gradient energy. \erank: entropy effective rank. Top-8: fraction of energy in the top 8 directions. The ordering code $\gg$ \gsm $>$ \boolq $>$ \agnews $>$ \emotion $>$ \sst is consistent across sizes.}
+    \label{tab:gradid}
+    \small
+    \begin{tabular}{@{}lccccccc@{}}
+        \toprule
+        & \multicolumn{4}{c}{\textbf{\qsmall}} & \multicolumn{3}{c}{\textbf{\qlarge}} \\
+        \cmidrule(lr){2-5} \cmidrule(lr){6-8}
+        \textbf{Task} & \rninety & $r_{99}$ & \erank & Top-8 & \rninety & $r_{99}$ & \erank \\
+        \midrule
+        \sst     & 2 & 4   & 7.4   & 0.999 & 2 & 5   & 10.2 \\
+        \emotion & 2 & 5   & 10.3  & 0.999 & 2 & 5   & 12.3 \\
+        \agnews  & 2 & 5   & 17.0  & 0.997 & 2 & 5   & 18.6 \\
+        \boolq   & 2 & 7   & 26.1  & 0.993 & 2 & 6.5 & 22.4 \\
+        \gsm     & 4 & 9   & 46.3  & 0.990 & 4 & 11  & 80.4 \\
+        \code    & 6 & 143 & 223.7 & 0.919 & 3 & 89  & 244.2 \\
+        \bottomrule
+    \end{tabular}
+\end{table}

@@ -1,0 +1,29 @@
+\begin{table}[t]
+    \centering
+    \caption{How well initial-gradient statistics predict rank needs over $n=12$ (task, model) pairs. Positive $\rho$ means ``predicts higher rank'' (top-8 energy and zero-shot accuracy are sign-flipped). ``Within 2$\times$'' is the leave-one-out hit rate after fitting one multiplicative scale. All significant correlations with the knee are \emph{negative}, and no gradient statistic beats always predicting $r{=}8$ (best value per target in {\bf bold}).}
+    \label{tab:predictor}
+    \small
+    \begin{tabular}{@{}llccc@{}}
+        \toprule
+        \textbf{Target} & \textbf{Predictor} & \textbf{Spearman $\rho$} & \textbf{Perm.\ $p$} & \textbf{Within 2$\times$} \\
+        \midrule
+        \multirow{7}{*}{Knee}
+        & \rninety (primary) & $-$0.74 & 0.014 & 0.00 \\
+        & $r_{99}$           & $-$0.58 & 0.059 & 0.00 \\
+        & \erank             & $-$0.52 & 0.093 & 0.08 \\
+        & Top-8 energy       & $-$0.63 & 0.029 & -- \\
+        & Stable rank        & $-$0.57 & 0.061 & 0.00 \\
+        & Zero-shot accuracy & $-$0.50 & 0.111 & -- \\
+        & Constant $r{=}8$   & -- & -- & {\bf 0.50} \\
+        \midrule
+        \multirow{3}{*}{Best rank}
+        & \rninety           & $-$0.64 & 0.029 & {\bf 0.42} \\
+        & \erank             & $-$0.45 & 0.143 & 0.08 \\
+        & Constant $r{=}8$   & -- & -- & 0.17 \\
+        \midrule
+        \multirow{2}{*}{NLL knee}
+        & \rninety           & 0.27 & 0.632 & {\bf 0.92} \\
+        & $r_{99}$           & 0.47 & 0.161 & 0.67 \\
+        \bottomrule
+    \end{tabular}
+\end{table}

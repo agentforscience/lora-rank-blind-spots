@@ -1,0 +1,14 @@
+\section{Related Work}
+\label{sec:related}
+
+\para{Low-rank adaptation and rank choice.}
+\lora~\citep{hu2021lora} freezes the pretrained weights and learns a low-rank update $\Delta\mW = \tfrac{\alpha}{r}\mB\mA$. \citet{hu2021lora} report that ranks as small as 1--8 match full fine-tuning on GPT-3 for several NLU and NLG benchmarks. AdaLoRA~\citep{zhang2023adalora} allocates the rank budget across weight matrices using importance scores, which suggests that one global rank is not ideal. Unlike these works, we do not propose a new allocation scheme. We ask how much a single global rank matters across task types once other factors are held fixed.
+
+\para{Intrinsic dimension of fine-tuning.}
+\citet{aghajanyan2020intrinsic} show that fine-tuning can be done in a random subspace of low dimension, and that this dimension shrinks as models grow. Effective-rank measures such as the entropy-based effective rank~\citep{roy2007effective} quantify how spread out a spectrum is. Building on these ideas, we test whether the spectrum of the full-weight gradient at initialization predicts how much \lora rank a task needs, and whether the needed rank shrinks from 0.5B to 1.5B parameters.
+
+\para{Rank, scaling, and learning rate.}
+\citet{kalajdzievski2023rslora} show that the standard $\alpha/r$ scaling makes high-rank adapters learn too slowly, and they propose $\alpha/\sqrt{r}$ scaling (rsLoRA). Under the common $\alpha = 2r$ convention we study, the scale is constant and the update magnitude instead grows with rank. Both results imply that rank and effective learning rate are coupled. We measure this coupling directly with a joint rank $\times$ learning-rate sweep and show that it explains most of the apparent task dependence of rank.
+
+\para{When does high rank help?}
+\citet{biderman2024lora} find that \lora underperforms full fine-tuning on code and math, and that higher ranks narrow the gap, mainly in continued pre-training on billions of tokens. This finding is a main source of the intuition that code and math need high rank. We test the intuition in a different and very common regime: supervised fine-tuning (SFT) of small base models on a few thousand examples. In this regime we find the opposite ordering.

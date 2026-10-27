@@ -1,0 +1,36 @@
+\section{Discussion}
+\label{sec:discussion}
+
+\begin{table}[t]
+    \centering
+    \caption{Verdicts on the pre-registered hypotheses.}
+    \label{tab:verdicts}
+    \small
+    \begin{tabular}{@{}lp{3.6cm}p{8.2cm}@{}}
+        \toprule
+        \textbf{ID} & \textbf{Verdict} & \textbf{Evidence} \\
+        \midrule
+        H1 & Refuted in substance & Knees span 1--32 at a fixed learning rate, but code and \gsm are lowest and \emotion is highest. Best-over-lr curves are flat or favour low rank. \\
+        H2 & Not supported & The maximum gain above $r{=}8$ is 2.6\pp (cross-fitted 1.8\pp), only on \emotion, and it vanishes with a tuned learning rate. \\
+        H3 & Weak / inconclusive & The knee is lower for 1.5B on 3/6 tasks and never higher (sign test $p=0.25$). Best ranks move both ways. \\
+        H4 & Refuted (opposite sign) & $\rho(\text{\rninety}, \text{knee}) = -0.74$, $p=0.014$. Factor-2 hit rate 0/12 vs.\ 6/12 for constant $r{=}8$. \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\Tabref{tab:verdicts} summarizes our verdicts. We now discuss why the results run against the common intuition.
+
+\para{Why do math and code not need high rank here?}
+We see three explanations that fit the data. First, {\bf SFT on 4,000 examples mostly teaches format, not capability}. Qwen2.5 base models saw a lot of math and code in pre-training~\citep{qwen2024qwen25}. Zero-shot \gsm accuracy is 3.4\% mainly because the base model does not emit the expected final-answer format, and $r{=}1$ already reaches 37.3\%. \mbpp gains are at most 2\pp. Learning a response format is a low-rank change. The high-rank regime of \citet{biderman2024lora} involves billions of tokens of continued pre-training, which is a different setting. Second, {\bf a higher rank means a larger effective step and more forgetting}. Under $\alpha=2r$, large ranks at a fixed learning rate overfit the small SFT set and damage pretrained skills. Held-out NLL worsens at $r\geq 64$ on \gsm and code, and every collapse we observe coincides with worse NLL. Third, {\bf \emotion is the exception because its labels are idiosyncratic}. Distinctions such as ``love'' vs.\ ``joy'' are noisy and dataset-specific, and the base model does not already encode them (52.6\% zero-shot). \emotion therefore needs the most movement away from the base model, and at a fixed learning rate only more rank delivers that movement.
+
+\para{Why does the gradient predictor fail?}
+At initialization, the mean gradient is dominated by one or two directions in every task: the median stable rank is 1.2--1.7, and $r_{50}=1$. The tail that \rninety and \erank measure reflects how diverse the token-level targets are. Code has the most varied output tokens, and \sst has a single label token. Diverse targets do not mean that the \emph{solution} needs many directions: the best code and \gsm adapters have rank 1--16. The predictor also ignores the rank--learning-rate coupling, which dominates the empirical knees. A useful predictor probably needs information from training, such as the spectrum of $\Delta\mW$ after a short pilot run.
+
+\para{Failure modes.}
+The high-rank collapses (\boolq $r{=}128$, code $r{=}128$, \gsm $r{=}128$ at learning rate $5\times10^{-4}$) all come with worse held-out NLL. They reflect overfitting or instability, not a lack of capacity. On 1.5B code, every adapter is below the zero-shot \mbpp score, because the alpaca-style training instructions do not match \mbpp's prompt and assert format. The 1.5B code knee therefore mostly measures how little damage each rank does.
+
+\para{Limitations.}
+Our models are small (0.5B and 1.5B) and come from one family. The 1.5B grid has one seed, so H3 rests on two sizes and is underpowered. The results may not transfer to 7B+ models or other families. We use 4,000 examples and one epoch per task. Rank needs may grow with much larger SFT sets or with continued pre-training. We study one parameterization ($\alpha=2r$ on all linear layers). rsLoRA scaling~\citep{kalajdzievski2023rslora} or attention-only targets would change the rank--learning-rate coupling. The learning-rate sweep covers only 3 tasks, 4 ranks, one model, and one seed. Evaluation sets of 500--1,000 items give standard errors of 1--2\pp, which is comparable to many differences between neighbouring ranks. We therefore base our conclusions on monotone trends and learning-rate interactions rather than on single-rank comparisons. The gradient predictor used 128 examples and one seed, and we did not test alternatives such as per-example gradient covariance. Finally, we used Hugging Face generation with greedy decoding, and timings are not comparable across runs because the GPUs were shared.
+
+\para{Broader implications.}
+For practitioners, our results suggest a simple rule: sweeping the learning rate is worth much more than sweeping the rank. Keeping $r\approx 8$--16 also saves memory and compute compared with large ranks. A negative result like ours can also prevent wasted effort on rank searches. We see no direct negative societal impact from this study beyond the general risks of fine-tuning language models.

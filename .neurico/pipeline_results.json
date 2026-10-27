@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "stages": {
+    "resource_finder": {
+      "success": true,
+      "skipped": true
+    },
+    "experiment_runner": {
+      "success": true,
+      "return_code": 0,
+      "elapsed_time": 15383.776417732239,
+      "log_file": "/data/summereunann/neurico-workspaces/lora_rank_blind_spots_20261026_120001_qr78st90/logs/execution_claude.log",
+      "transcript_file": "/data/summereunann/neurico-workspaces/lora_rank_blind_spots_20261026_120001_qr78st90/logs/execution_claude_transcript.jsonl",
+      "background_processes_terminated": false
+    }
+  },
+  "work_dir": "/data/summereunann/neurico-workspaces/lora_rank_blind_spots_20261026_120001_qr78st90"
+}

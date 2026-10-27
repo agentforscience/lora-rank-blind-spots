@@ -1,0 +1,50 @@
+\section{Methodology}
+\label{sec:method}
+
+\subsection{Problem formulation}
+For a task $t$, a model $m$, and a \lora rank $r \in \gR = \{1,2,4,8,16,32,64,128\}$, let $s_{t,m}(r)$ be the seed-averaged evaluation metric after fine-tuning. We pre-register three quantities.
+The \defn{best rank} is $r^\star = \argmax_{r \in \gR} s_{t,m}(r)$.
+The \defn{knee rank} is the smallest rank whose metric is within $\delta$ of the best,
+\begin{equation}
+r_{\text{knee}} = \min\{\, r \in \gR : s_{t,m}(r) \geq s_{t,m}(r^\star) - \delta \,\}, \qquad \delta = \max(0.5\,\text{pp},\ \mathrm{SE}(r^\star)),
+\end{equation}
+where $\mathrm{SE}(r^\star)$ is the standard error of the item-level mean at the best rank.
+The \defn{rank-8 gap} is $s_{t,m}(r^\star) - s_{t,m}(8)$.
+We also report an NLL knee: the smallest rank that achieves 95\% of the maximal reduction in held-out target NLL relative to zero-shot.
+
+\subsection{Tasks and models}
+We use the base (not instruction-tuned) \qsmall and \qlarge models~\citep{qwen2024qwen25}. Both share a tokenizer and training recipe, so they give a clean size comparison. A 3B model was not feasible on our shared GPUs. \Tabref{tab:tasks} lists the six tasks. All tasks are cast as causal-LM SFT, with the loss applied only to response tokens. Each task uses 4,000 training examples for one epoch. Every run also reports held-out NLL on target tokens for 300 unseen examples from the training distribution. This is a lower-noise secondary metric.
+
+\begin{table}[t]
+    \centering
+    \caption{Tasks. Each training set has 4,000 examples. Classification accuracy takes the argmax over the first tokens of the label words. Generative tasks use greedy decoding.}
+    \label{tab:tasks}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}llll@{}}
+        \toprule
+        \textbf{Task} & \textbf{Training source} & \textbf{Evaluation set} & \textbf{Metric} \\
+        \midrule
+        \sst~\citep{socher2013recursive,wang2018glue} & GLUE \sst train & validation, 872 & accuracy \\
+        \emotion (6-way)~\citep{saravia2018carer} & dair-ai/emotion train & test, 1,000 sampled & accuracy \\
+        \agnews (4-way)~\citep{zhang2015character} & train & test, 1,000 sampled & accuracy \\
+        \boolq~\citep{clark2019boolq} & train & validation, 1,000 sampled & accuracy \\
+        \gsm~\citep{cobbe2021training} & train (calculator annotations removed) & test, 500 sampled & exact match of final number ($\leq$320 new tokens) \\
+        \code & python\_code\_instructions\_18k\_alpaca & \mbpp test, all 500~\citep{austin2021program} & pass@1 (all 3 asserts pass, 10\,s timeout) \\
+        \bottomrule
+    \end{tabular}}
+\end{table}
+
+\subsection{Training recipe}
+We attach \lora adapters to all linear layers (query, key, value, output, gate, up, and down projections) with $\alpha = 2r$. This is the ``$r{=}8$, $\alpha{=}16$'' convention, and it gives a constant scale of 2. We use dropout 0.05, AdamW with learning rate $2\times10^{-4}$, a cosine schedule with 3\% warmup, effective batch size 16, one epoch (250 steps), maximum length 512, bf16 autocast, gradient checkpointing, and gradient clipping at 1.0. The trainable parameter count ranges from 0.55M ($r{=}1$) to 70M ($r{=}128$) on 0.5B, and from 1.15M to 148M on 1.5B. We also evaluate the zero-shot base model ($r{=}0$). On 0.5B we use seeds 0 and 1. The seed controls the \lora initialization, data order, and dropout; the training subset is fixed. On 1.5B we use seed 0 only.
+
+\para{Learning-rate sweep.}
+Comparing ranks at a single learning rate is confounded, because under $\alpha=2r$ the update $\Delta\mW = 2\mB\mA$ is a sum of $r$ rank-1 terms that are all trained at the same learning rate. A larger rank therefore acts roughly like a larger step. To remove this confound, we sweep the learning rate over $\{5\times10^{-5}, 10^{-4}, 2\times10^{-4}, 5\times10^{-4}\}$ for ranks $\{2,8,32,128\}$ on \code, \gsm, and \emotion (0.5B, seed 0). We extend the grid to $2\times10^{-5}$ for \gsm and \code at $r\in\{8,128\}$, and to $10^{-3}$ and $2\times10^{-3}$ for \emotion at $r\in\{2,8\}$.
+
+\subsection{Gradient intrinsic dimensionality predictor}
+For each task and model, we accumulate the full-weight gradient $\mG_\ell = \nabla_{\mW_\ell}\gL$ of the mean token loss at the pretrained weights over 128 training examples. We do this for all target matrices (168 for 0.5B, 196 for 1.5B) and compute each matrix's singular values $\sigma_1 \geq \sigma_2 \geq \dots$. From each spectrum we compute $r_{p}$, the number of directions needed to capture a fraction $p$ of $\|\mG_\ell\|_F^2$, for $p\in\{0.5, 0.9, 0.99\}$. We also compute the entropy effective rank (\erank)~\citep{roy2007effective}, the stable rank $\|\mG_\ell\|_F^2/\sigma_1^2$, and the fraction of energy in the top-8 directions. The task-level predictor is the median over matrices, with \rninety pre-registered as primary. The predictor is cheap: it needs one backward pass per example and no training.
+
+\subsection{Baselines and statistics}
+Our baselines are the zero-shot model, the $r{=}8$ default, and the best-rank oracle. For the predictor, the baselines are a constant prediction of $r{=}8$ and the zero-shot error rate as a naive difficulty score. We test the rank-8 gap with a paired bootstrap over evaluation items (5,000 resamples) and apply Holm correction over the six tasks. Choosing the best rank and measuring its gap on the same data is biased upward (winner's curse). We therefore also report a \defn{cross-fitted gap}: we pick $r^\star$ on one seed and measure the gap on the other. For H4 we report Spearman $\rho$ over the 12 (task, model) pairs with a permutation $p$-value (5,000 permutations). We also report a leave-one-out factor-2 hit rate: we fit a single multiplicative scale on 11 pairs and check whether the prediction for the held-out pair is within $2\times$ of its knee. For H3 we use a sign test.
+
+\para{Compute.}
+All runs use 4$\times$ RTX A6000 GPUs shared with other users. Our jobs ran in 2.5--5\,GB slices through a memory-aware queue. A run took between 1.5 minutes (classification) and about 45 minutes (1.5B generation on a busy GPU), for about 4 hours of wall-clock time in total. We use PyTorch, Hugging Face \texttt{transformers} and \texttt{peft}, and SciPy.

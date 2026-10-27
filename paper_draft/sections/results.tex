@@ -1,0 +1,88 @@
+\section{Results}
+\label{sec:results}
+
+We first report rank curves at a fixed learning rate (\secref{sec:res_curves}) and the cost of $r{=}8$ (\secref{sec:res_gap}). We then show that the learning rate explains most of the rank effect (\secref{sec:res_lr}), and we close with model size (\secref{sec:res_size}) and the gradient predictor (\secref{sec:res_pred}).
+
+\subsection{Rank curves at a fixed learning rate}
+\label{sec:res_curves}
+
+\input{tables/rank_grid}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/rank_curves.png}
+    \caption{Rank curves at learning rate $2\times10^{-4}$. \figtop\ Evaluation metric vs.\ \lora rank (lines are seed means, faint dots are individual seeds, dotted lines are zero-shot, dashed vertical lines are knees, grey line marks $r{=}8$). \figbottom\ Held-out target NLL. Only \emotion has a steep, monotone rank curve. \gsm and code decline with rank, and their NLL worsens at $r\geq64$. Curve shapes are nearly identical for 0.5B (blue) and 1.5B (red).}
+    \label{fig:rank_curves}
+\end{figure}
+
+\Tabref{tab:rank_grid} and \figref{fig:rank_curves} show the main grid. {\bf Does the best rank vary across tasks?} Yes: it ranges from $r{=}1$ (0.5B \gsm, 1.5B code) to $r{=}128$ (0.5B \emotion, 1.5B \agnews). But the task ordering is not the one the folk wisdom predicts.
+
+\para{Classification is flat.} On \sst and \agnews, $r{=}1$ is already within 1.3\pp of the best rank for 0.5B, and the curve barely moves after $r{=}8$.
+
+\para{Emotion is the one steep curve.} 6-way \emotion rises from 77.7\% at $r{=}1$ to 89.7\% at $r{=}8$ and 92.3\% at $r{=}128$ on 0.5B. 1.5B follows the same shape.
+
+\para{Math and code prefer low rank.} \gsm accuracy falls almost monotonically with rank on 0.5B: 37.3\% at $r{=}1$, 34.1\% at $r{=}8$, and 30.1\% at $r{=}128$. Held-out NLL stays nearly flat (0.555--0.568) up to $r{=}64$ and then worsens. On \code, fine-tuning barely beats zero-shot on 0.5B (best 28.8\% at $r{=}16$ vs.\ 27.0\%), and $r{=}128$ drops to 22.7\%, below zero-shot. On 1.5B, every code adapter scores below the 47.2\% zero-shot pass@1.
+
+\para{Large ranks can collapse.} \boolq rises to 78.0\% at $r{=}32$ and then drops to 67.1\% at $r{=}128$ (seeds: 63.1\% and 71.1\%). Together with \gsm and code, large ranks at the default learning rate cost 7--11\pp on three of six tasks for 0.5B.
+
+\subsection{How much does $r{=}8$ cost?}
+\label{sec:res_gap}
+
+\input{tables/gap}
+
+\Tabref{tab:gap} tests the rank-8 gap. {\bf H1 (rank needs vary $\geq 8\times$)} holds numerically: knees range from 1 to 32. However, the direction is reversed. \gsm and code have the \emph{lowest} knees ($r{=}1$ for both models), and \emotion has the highest ($r{=}32$ for 0.5B, $r{=}16$ for 1.5B).
+
+{\bf H2 ($r{=}8$ costs 3--8\pp on high-rank tasks)} is not supported. The largest gain from any rank above 8 is $+2.6$\pp on 0.5B \emotion (CI [1.2, 4.0], $p_\text{Holm}<0.001$). It shrinks to $+1.8$\pp when cross-fitted across seeds, which removes the winner's-curse bias. On 1.5B \emotion the gain is $+2.2$\pp ($p_\text{Holm}=0.018$). These are the only significant gaps after correction. No generative task gains more than 1\pp from a rank above 8. On 0.5B \gsm the best rank above 8 is 0.7\pp \emph{worse} than $r{=}8$. The two largest uncorrected gaps, 0.5B \gsm ($+3.2$\pp, CI [0.7, 5.7]) and 1.5B code ($+2.2$\pp, CI [0.2, 4.2]), both favour $r{=}1$. On these tasks, $r{=}8$ is too large, not too small.
+
+\subsection{The rank effect is mostly a learning-rate effect}
+\label{sec:res_lr}
+
+\input{tables/lr_sweep}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\linewidth]{figures/lr_sweep.png}
+    \caption{Metric vs.\ rank for each learning rate on \qsmall (seed 0). The dashed black line takes the best learning rate per rank. \figright\ On \emotion, low learning rates produce a steep ``needs high rank'' curve, while learning rates of $5\times10^{-4}$--$10^{-3}$ give a flat curve. \figleft\ and \figcenter\ On \code and \gsm, high rank never helps, and high rank combined with a high learning rate is destructive.}
+    \label{fig:lr_sweep}
+\end{figure}
+
+\Tabref{tab:lr} and \figref{fig:lr_sweep} show the rank $\times$ learning-rate sweep. {\bf Does the \emotion gap survive learning-rate tuning?} No. At learning rate $5\times10^{-5}$, \emotion accuracy climbs from 68.9\% ($r{=}2$) to 92.1\% ($r{=}128$), a textbook ``needs high rank'' curve. At $5\times10^{-4}$--$10^{-3}$ the curve is flat: 92.1\% ($r{=}2$), 92.8\% ($r{=}8$), 92.4\% ($r{=}32$), 92.4\% ($r{=}128$). The best-over-lr spread across ranks is only 0.7\pp, and $r{=}8$ is the best rank. By contrast, the learning rate changes $r{=}8$ accuracy by 15.3\pp (77.5\% to 92.8\%). The explanation is the $\alpha=2r$ scaling: the update $2\mB\mA$ is a sum of $r$ rank-1 terms trained at the same learning rate, so a larger rank acts like a larger step. A low rank at a higher learning rate reaches the same accuracy.
+
+On \gsm, the best-over-lr accuracy is highest at $r{=}8$ (37.6\%, learning rate $5\times10^{-5}$) and lowest at $r{=}128$ (34.0\%, $2\times10^{-5}$). High rank never helps, and at a high learning rate it is destructive ($r{=}128$ at $5\times10^{-4}$: 22.4\%). On \code, best-over-lr pass@1 is flat (27.8--29.6\%) and within noise (SE $\approx$ 2\pp). $r{=}128$ at $5\times10^{-4}$ falls to 15.4\%, with held-out NLL rising from 0.708 to 0.857.
+
+The best learning rate shrinks as rank grows on all three tasks: on \emotion from $10^{-3}$ ($r{=}2$) to $10^{-4}$--$2\times10^{-4}$ ($r{=}128$), on \gsm from $10^{-4}$ to $2\times10^{-5}$, and on \code from $10^{-4}$/$5\times10^{-4}$ to $2\times10^{-5}$/$5\times10^{-5}$. This is the coupling expected under $\alpha\propto r$. The common recipe of ``$r{=}8$ with learning rate $2\times10^{-4}$'' is a matched pair. Changing the rank without changing the learning rate creates apparent rank effects.
+
+\subsection{Does the knee shrink with model size?}
+\label{sec:res_size}
+
+\input{tables/size}
+
+\Tabref{tab:size} compares the two model sizes. {\bf H3} is directionally consistent but not statistically supported. The knee is lower for 1.5B on \sst, \emotion, and \boolq, equal on the other three tasks, and never higher. A sign test on the three non-tied pairs gives $p=0.25$. The best rank moves in both directions. The fixed-learning-rate curves have nearly the same shape at both sizes (\figref{fig:rank_curves}). The clearest size effect is robustness: 1.5B suffers much less from the $r{=}128$ collapse on \boolq ($-2.5$\pp vs.\ $-10.9$\pp).
+
+\subsection{Does the initial gradient spectrum predict rank needs?}
+\label{sec:res_pred}
+
+\input{tables/gradid}
+
+\begin{figure}[t]
+    \centering
+    \begin{subfigure}[b]{0.8\textwidth}
+        \includegraphics[width=\textwidth]{figures/gradient_spectra.png}
+        \caption{Gradient energy outside the top-$k$ directions}
+        \label{fig:spectra}
+    \end{subfigure}
+    \\[4pt]
+    \begin{subfigure}[b]{0.95\textwidth}
+        \includegraphics[width=\textwidth]{figures/gradid_vs_knee.png}
+        \caption{Gradient statistic vs.\ empirical knee}
+        \label{fig:gradid_knee}
+    \end{subfigure}
+    \caption{The gradient-spectrum predictor. \captiona\ Fraction of gradient energy not captured by the top-$k$ singular directions, median over target matrices, for 0.5B (left) and 1.5B (right). Spectra are truncated at 256, so curves drop to 0 there by construction. The grey line marks $k{=}8$. Code has by far the heaviest tail. \captionb\ \rninety (left), \rninety vs.\ NLL knee (middle), and \erank (right) against the knee rank (log scale). Tasks with the heaviest gradient tails (code, \gsm) have the \emph{lowest} knees.}
+    \label{fig:gradid}
+\end{figure}
+
+\Tabref{tab:gradid} and \figref{fig:spectra} show that the gradient statistic separates tasks cleanly and consistently across model sizes. The code gradient spreads over two orders of magnitude more directions than \sst (\erank 223.7 vs.\ 7.4 on 0.5B), and only 91.9\% of its energy lies in the top 8 directions, compared with 99.9\% for \sst.
+
+{\bf H4 (the statistic predicts the knee with $\rho>0.7$)} is refuted, with a significant correlation of the opposite sign (\tabref{tab:predictor}, \figref{fig:gradid_knee}). The primary predictor \rninety has $\rho=-0.74$ ($p=0.014$) with the knee. All other gradient statistics also correlate negatively ($\rho$ from $-0.52$ to $-0.63$). With a leave-one-out calibrated scale, \rninety lands within $2\times$ of the knee for 0 of 12 pairs, while always predicting $r{=}8$ succeeds for 6 of 12. The NLL knee shows a weak positive correlation ($\rho=0.27$, $p=0.63$). Its high hit rate (0.92) is not informative, because NLL knees are 1 or 2 for every pair.
+
+\input{tables/predictor}
